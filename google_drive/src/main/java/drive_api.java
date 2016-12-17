@@ -29,13 +29,13 @@ public class drive_api {
      * Application name.
      */
     private static final String APPLICATION_NAME =
-            "Drive API Java Quickstart";
+            "Drive_API";
 
     /**
      * Directory to store user credentials for this application.
      */
-    private static final java.io.File DATA_STORE_DIR = new java.io.File(
-            System.getProperty("user.home"), ".credentials/drive-java-quickstart");
+    private static final java.io.File DATA_CREDENTIALS_DIR = new java.io.File(
+          "/.credentials/drive-java-quickstart");
 
     /**
      * Global instance of the {@link FileDataStoreFactory}.
@@ -65,7 +65,7 @@ public class drive_api {
     static {
         try {
             HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-            DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
+            DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_CREDENTIALS_DIR);
         } catch (Throwable t) {
             t.printStackTrace();
             System.exit(1);
@@ -95,7 +95,19 @@ public class drive_api {
         Credential credential = new AuthorizationCodeInstalledApp(
                 flow, new LocalServerReceiver()).authorize("user");
         System.out.println(
-                "Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
+                "Credentials saved to " + DATA_CREDENTIALS_DIR.getAbsolutePath());
         return credential;
+    }
+    /**
+     * Build and return an authorized Drive client service.
+     * @return an authorized Drive client service
+     * @throws IOException
+     */
+    public static Drive getDriveService() throws IOException {
+        Credential credential = authorize();
+        return new Drive.Builder(
+                HTTP_TRANSPORT, JSON_FACTORY, credential)
+                .setApplicationName(APPLICATION_NAME)
+                .build();
     }
 }

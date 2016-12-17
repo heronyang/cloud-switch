@@ -17,10 +17,9 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.*;
 import com.google.api.services.drive.Drive;
+import org.mortbay.jetty.AbstractGenerator;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -60,7 +59,7 @@ public class drive_api {
      * at ~/.credentials/drive-java-quickstart
      */
     private static final List<String> SCOPES =
-            Arrays.asList(DriveScopes.DRIVE_METADATA_READONLY);
+            Arrays.asList(DriveScopes.DRIVE);
 
     static {
         try {
@@ -109,5 +108,16 @@ public class drive_api {
                 HTTP_TRANSPORT, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)
                 .build();
+    }
+
+    public static void downloadFile(String fileID, Drive service, OutputStream outputStream){
+        try{
+            OutputStream out= new FileOutputStream(new java.io.File("d:/newfile"));
+            service.files().export(fileID, "application/pdf")
+            .executeMediaAndDownloadTo(out);
+        }
+        catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
     }
 }

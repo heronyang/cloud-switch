@@ -20,3 +20,15 @@
 ## Limitation
 
 No, so far.
+
+## Install
+
+```
+> ./install.sh
+```
+
+## Run
+
+```
+> ./main.py
+```

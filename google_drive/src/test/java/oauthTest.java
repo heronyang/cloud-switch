@@ -19,34 +19,23 @@ public class oauthTest {
         System.out.println("Let the game begin");
         try {
             Drive service = drive_api.getDriveService();
-            drive_api.downloadFile("1keOX2DcSkZgqg2wrTmSi57yQU_DiH5Cf3N0Wxlc2T1c",service,null);
-            printFiles(service);
+            ArrayList<File> folders = new ArrayList<File>();
+            ArrayList<File> files = new ArrayList<File>();
+            folders.addAll(drive_api.queryFiles(service,"root",false));
+            files.addAll(drive_api.queryFiles(service,"root",true));
+            while (!folders.isEmpty()) {
+                String parentID=folders.get(0).getId();
+                folders.remove(0);
+                files.addAll(drive_api.queryFiles(service,parentID,true));
+                folders.addAll(drive_api.queryFiles(service,parentID,false));
+                Thread.sleep(500);
+            }
+
         }
         catch (IOException e) {
             System.err.println(e.getMessage());
         } catch (Throwable t) {
             t.printStackTrace();
-        }
-    }
-    private void printFiles(Drive service) {
-        try {
-            // Print the names and IDs for up to 10 files.
-            FileList result = service.files().list()
-                    .setPageSize(10)
-                    .setFields("nextPageToken, files(id, name)")
-                    .execute();
-            List<File> files = result.getFiles();
-            if (files == null || files.size() == 0) {
-                System.out.println("No files found.");
-            } else {
-                System.out.println("Files:");
-                for (File file : files) {
-                    System.out.printf("%s (%s)\n", file.getName(), file.getId());
-                }
-            }
-        }
-        catch (IOException e) {
-            System.err.println(e.getMessage());
         }
     }
 }

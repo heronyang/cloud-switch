@@ -17,9 +17,11 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.*;
 import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.File;
 import org.mortbay.jetty.AbstractGenerator;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class drive_api {
      * Directory to store user credentials for this application.
      */
     private static final java.io.File DATA_CREDENTIALS_DIR = new java.io.File(
-          "/.credentials/drive-java-quickstart");
+            System.getProperty("user.home"), ".credentials/drive-java-quickstart");
 
     /**
      * Global instance of the {@link FileDataStoreFactory}.
@@ -112,12 +114,55 @@ public class drive_api {
 
     public static void downloadFile(String fileID, Drive service, OutputStream outputStream){
         try{
-            OutputStream out= new FileOutputStream(new java.io.File("d:/newfile"));
             service.files().export(fileID, "application/pdf")
-            .executeMediaAndDownloadTo(out);
+            .executeMediaAndDownloadTo(outputStream);
         }
         catch (IOException e) {
             System.err.println(e.getMessage());
         }
+    }
+    /**
+     * Query all the files or folders in the Drive Service specified by thier parent
+     * @param service the drive application
+     * @param parentID the parent ID of the file's directory
+     * @param ifFile true if you want files, false if you want folders
+     * @return an queried file list
+     * @throws IOException
+     */
+   public static List<File> queryFiles(Drive service,String parentID,Boolean ifFile) {
+       List<File> files;
+       List<File> results = new ArrayList<File>();
+       String pageToken = null;
+        try {
+            System.out.println("Searched Parent: "+service.files().get(parentID).execute().getName());
+            String q="'"+parentID+"' in parents and trashed = false";
+            if (!ifFile) q=q+" and mimeType = 'application/vnd.google-apps.folder'";
+            else q=q+" and mimeType != 'application/vnd.google-apps.folder'";
+            do {
+                FileList result;
+                result = service.files().list()
+                        .setPageSize(1000)
+                        .setFields("nextPageToken, files(id, name)")
+                        .setPageToken(pageToken)
+                        .setQ(q)
+                        .execute();
+                files = result.getFiles();
+                if (files == null || files.size() == 0) {
+                    System.out.println("No files found.");
+                } else {
+                    System.out.println("Files: "+" "+files.size());
+                    for (File file : files) {
+                        results.add(file);
+                        System.out.printf("%s (%s)\n", file.getName(), file.getId());
+                    }
+                }
+                pageToken = result.getNextPageToken();
+            } while (pageToken!=null);
+            return results;
+        }
+        catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+        return null;
     }
 }

@@ -7,8 +7,14 @@ public class Main {
 	
 	private static void transfer(StoragePlugin from, StoragePlugin to) {
 		
-		String savedPath = from.downloadAll();
-		to.uploadAll(savedPath);
+		try {
+			String savedPath = from.downloadAll();
+			to.uploadAll(savedPath);
+		}
+		catch (Throwable t) {
+			t.printStackTrace();
+		}
+
 		
 	}
 	

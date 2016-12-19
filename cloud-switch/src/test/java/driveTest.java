@@ -12,14 +12,13 @@ import static java.lang.System.exit;
  **/
 public class driveTest {
     @Test
-    public void driveTest() {
+    public void driveTest() throws InterruptedException {
         GoogleDrive drive=new GoogleDrive();
         if(!drive.auth()) {
             System.out.println("auth failure!!");
             exit(-1);
         }
         System.out.println("auth success!");
-        queryHelper.queryFolder(drive.service,"root",drive.OWNER);
-
+        drive.downloadAll();
     }
 }

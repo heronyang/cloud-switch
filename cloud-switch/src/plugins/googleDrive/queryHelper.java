@@ -13,6 +13,12 @@ import java.util.List;
  * Information Networking Institute, Carnegie Mellon University
  **/
 public class queryHelper {
+    private static String OWNER;
+
+
+    public void setOWNER(String owner){
+        OWNER=owner;
+    }
     /**
      * Query all the files or folders in the Drive Service specified by their parent
      * @param service the drive application
@@ -21,18 +27,18 @@ public class queryHelper {
      * @return an queried file list
      * @throws IOException
      */
-    private static List<File> queryHelper(Drive service, String parentID, Boolean ifFile, String owner) {
+    private static List<File> queryHelper(Drive service, String parentID, Boolean ifFile) {
         List<File> files;
         List<File> results = new ArrayList<File>();
         String pageToken = null;
         try {
             System.out.println("Searched Parent: "+service.files().get(parentID).execute().getName());
-            String q=setQueryCondition(parentID, ifFile, owner);
+            String q=setQueryCondition(parentID, ifFile);
             do {
                 FileList result;
                 result = service.files().list()
                         .setPageSize(1000)
-                        .setFields("nextPageToken, files(id, name, parents)")
+                        .setFields("nextPageToken, files(id, name, parents, mimeType)")
                         .setPageToken(pageToken)
                         .setQ(q)
                         .execute();
@@ -55,7 +61,7 @@ public class queryHelper {
         }
         return null;
     }
-    private static String setQueryCondition(String parentID, Boolean ifFile,String owner)
+    private static String setQueryCondition(String parentID, Boolean ifFile)
     {
         String q;
         if (!parentID.isEmpty())
@@ -63,17 +69,16 @@ public class queryHelper {
         else q="trashed = false";//We won't download trashed file
         if (!ifFile) q=q+" and mimeType = 'application/vnd.google-apps.folder'";
         else q=q+" and mimeType != 'application/vnd.google-apps.folder'";
-        q=q+" and '"+owner+"' in owners";
+        q=q+" and '"+OWNER+"' in owners";
         return q;
     }
 
-    public static List<File> queryFile(Drive service,String parentID, String owner)
+    public static List<File> queryFile(Drive service,String parentID)
     {
-
-        return queryHelper(service,parentID,true,owner);
+        return queryHelper(service,parentID,true);
     }
-    public static List<File> queryFolder(Drive service,String parentID, String owner)
+    public static List<File> queryFolder(Drive service,String parentID)
     {
-        return queryHelper(service,parentID,false,owner);
+        return queryHelper(service,parentID,false);
     }
 }

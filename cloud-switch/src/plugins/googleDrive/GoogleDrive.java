@@ -6,7 +6,7 @@ import main.StoragePlugin;
 import java.io.IOException;
 
 public class GoogleDrive implements StoragePlugin {
-	public Drive service;
+	public Drive SERVICE;
 	public String OWNER;
 	public void load() {
 		// TODO Auto-generated method stub
@@ -26,8 +26,8 @@ public class GoogleDrive implements StoragePlugin {
 	public boolean auth() {
 		try {
 			System.out.println("Hello World!");
-			service = authHelper.getDriveService();
-			OWNER=authHelper.setOwner(service);
+			SERVICE = authHelper.getDriveService();
+			OWNER=authHelper.setOwner(SERVICE);
 			return true;
 		}
 		catch (IOException e) {
@@ -38,8 +38,9 @@ public class GoogleDrive implements StoragePlugin {
 		return false;
 	}
 
-	public String downloadAll() {
-		// TODO Auto-generated method stub
+	public String downloadAll() throws InterruptedException {
+		downloadHelper DHelper=new downloadHelper();
+		DHelper.downloadAll(SERVICE,OWNER);
 		return null;
 	}
 

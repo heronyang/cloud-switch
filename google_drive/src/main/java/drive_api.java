@@ -18,6 +18,7 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.*;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.mortbay.jetty.AbstractGenerator;
 
 import java.io.*;
@@ -31,6 +32,10 @@ public class drive_api {
      */
     private static final String APPLICATION_NAME =
             "Drive_API";
+    /**
+     * Email Address of the user who accesses this appplication
+     */
+    private static String OWNER;
 
     /**
      * Directory to store user credentials for this application.
@@ -122,33 +127,31 @@ public class drive_api {
         }
     }
     /**
-     * Query all the files or folders in the Drive Service specified by thier parent
+     * Query all the files or folders in the Drive Service specified by their parent
      * @param service the drive application
      * @param parentID the parent ID of the file's directory
      * @param ifFile true if you want files, false if you want folders
      * @return an queried file list
      * @throws IOException
      */
-   public static List<File> queryFiles(Drive service,String parentID,Boolean ifFile) {
+   private static List<File> queryHelper(Drive service,String parentID,Boolean ifFile) {
        List<File> files;
        List<File> results = new ArrayList<File>();
        String pageToken = null;
         try {
-            System.out.println("Searched Parent: "+service.files().get(parentID).execute().getName());
-            String q="'"+parentID+"' in parents and trashed = false";
-            if (!ifFile) q=q+" and mimeType = 'application/vnd.google-apps.folder'";
-            else q=q+" and mimeType != 'application/vnd.google-apps.folder'";
+            //System.out.println("Searched Parent: "+service.files().get(parentID).execute().getName());
+            String q=setQueryCondition(parentID, ifFile);
             do {
                 FileList result;
                 result = service.files().list()
                         .setPageSize(1000)
-                        .setFields("nextPageToken, files(id, name)")
+                        .setFields("nextPageToken, files(id, name, parents)")
                         .setPageToken(pageToken)
                         .setQ(q)
                         .execute();
                 files = result.getFiles();
                 if (files == null || files.size() == 0) {
-                    System.out.println("No files found.");
+                    //System.out.println("No files found.");
                 } else {
                     System.out.println("Files: "+" "+files.size());
                     for (File file : files) {
@@ -164,5 +167,29 @@ public class drive_api {
             System.err.println(e.getMessage());
         }
         return null;
+    }
+    private static String setQueryCondition(String parentID, Boolean ifFile)
+    {
+        String q;
+        if (!parentID.isEmpty())
+            q="'"+parentID+"' in parents and trashed = false";
+        else q="trashed = false";//We won't download trashed file
+        if (!ifFile) q=q+" and mimeType = 'application/vnd.google-apps.folder'";
+        else q=q+" and mimeType != 'application/vnd.google-apps.folder'";
+        q=q+" and '"+OWNER+"' in owners";
+        return q;
+    }
+
+    public static List<File> queryFile(Drive service,String parentID)
+    {
+        return queryHelper(service,parentID,true);
+    }
+    public static List<File> queryFolder(Drive service,String parentID)
+    {
+        return queryHelper(service,parentID,false);
+    }
+    public static void setOwner(String httpReturnValue)
+    {
+        OWNER=httpReturnValue.substring(25,httpReturnValue.length()-3);
     }
 }

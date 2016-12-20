@@ -28,6 +28,7 @@ public class GoogleDrive implements StoragePlugin {
 			System.out.println("Hello World!");
 			SERVICE = authHelper.getDriveService();
 			OWNER=authHelper.setOwner(SERVICE);
+
 			return true;
 		}
 		catch (IOException e) {

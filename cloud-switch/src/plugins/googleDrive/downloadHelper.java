@@ -19,8 +19,6 @@ public class downloadHelper {
     private static final java.io.File DATA_STORAGE_DIR = new java.io.File(
             System.getProperty("user.home"), ".downloadTemp/");
     private static final String DRIVEROOT="root";
-    private static final String GOOGLE_DOC="application/vnd.google-apps.document";
-    private static final String GOOGLE_UNKNOWN="application/vnd.google-apps.unknown";
 
     private Drive service;
 
@@ -65,9 +63,16 @@ public class downloadHelper {
             if ((!targetFile.exists())) {
 
                 OutputStream out = new FileOutputStream(targetFile);
-                System.out.println("MimeType for file "+file.getName()+" is "+file.getMimeType());
-                service.files().get(file.getId())
-                        .executeMediaAndDownloadTo(out);
+                String fileMimeType=file.getMimeType();
+                System.out.println("MimeType for file "+file.getName()+" is "+fileMimeType);
+                if (!mimeType.ifGoogleDoc(fileMimeType)) {
+                    service.files().get(file.getId())
+                            .executeMediaAndDownloadTo(out);
+                }
+                else {
+                    service.files().export(file.getId(),mimeType.convertExportType(fileMimeType, file.getName()))
+                            .executeMediaAndDownloadTo(out);
+                }
             }
         }
         catch (IOException e) {

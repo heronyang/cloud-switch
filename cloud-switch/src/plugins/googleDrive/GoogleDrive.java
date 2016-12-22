@@ -6,11 +6,18 @@ import main.StoragePlugin;
 import java.io.IOException;
 
 public class GoogleDrive implements StoragePlugin {
-	public Drive SERVICE;
-	public String OWNER;
-	public void load() {
-		// TODO Auto-generated method stub
+	private Drive SERVICE;
+	private String OWNER;
 
+	private downloadHelper DHelper = new downloadHelper();
+	private uploadHelper UHelper=new uploadHelper();
+
+	//This function will try to setup the config of the downloading process, including
+	//download path, etc.
+	public void load() {
+		String s=configHelper.getCurrentPath();
+		System.out.println("Default temp file would be the path of your current folder:" +s);
+		DHelper.setDataStoreDirectory(s);
 	}
 
 	public void run() {
@@ -40,9 +47,7 @@ public class GoogleDrive implements StoragePlugin {
 	}
 
 	public String downloadAll() throws InterruptedException {
-		downloadHelper DHelper=new downloadHelper();
-		DHelper.downloadAll(SERVICE,OWNER);
-		return null;
+		return DHelper.downloadAll(SERVICE,OWNER);
 	}
 
 	public void uploadAll(String path) {

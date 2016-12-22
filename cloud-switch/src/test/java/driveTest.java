@@ -19,6 +19,7 @@ public class driveTest {
             exit(-1);
         }
         System.out.println("auth success!");
+        drive.load();
         drive.downloadAll();
     }
 }

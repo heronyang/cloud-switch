@@ -126,7 +126,7 @@ public class Dropbox implements StoragePlugin {
         try {
             outputStream = new FileOutputStream(filepath);
 			DbxEntry.File downloadedFile = client.getFile(path, null, outputStream);
-			System.out.println("> downloaded file " + downloadedFile.toString());
+			System.out.println("> Downloaded file " + downloadedFile.toString());
 			outputStream.close();
 		} catch(IOException e){
 			e.printStackTrace();

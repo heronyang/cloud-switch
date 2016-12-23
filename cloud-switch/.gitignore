@@ -67,6 +67,5 @@ local.properties
 
 # App
 .downloadTemp/
-downloadTemp/
-download_temp/
+.dropbox_download_temp/
 .DS_Store

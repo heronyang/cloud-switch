@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-import static java.lang.System.exit;
 import static java.lang.Thread.sleep;
 
 /**
@@ -16,8 +15,7 @@ import static java.lang.Thread.sleep;
  * Information Networking Institute, Carnegie Mellon University
  **/
 public class downloadHelper {
-    private static final java.io.File DATA_STORAGE_DIR = new java.io.File(
-            System.getProperty("user.home"), ".downloadTemp/");
+    private java.io.File DATA_STORAGE_DIR;
     private static final String DRIVEROOT="root";
 
     private Drive service;
@@ -31,12 +29,12 @@ public class downloadHelper {
         ArrayList<File> files= new ArrayList<File>();
         ArrayList<File> folders = new ArrayList<File>();
         if (savePath==DATA_STORAGE_DIR.getAbsolutePath()) {
-            files.addAll(QHelper.queryFile(service, DRIVEROOT));
-            folders.addAll(QHelper.queryFolder(service, DRIVEROOT));
+            files.addAll(QHelper.queryDriveFile(service, DRIVEROOT));
+            folders.addAll(QHelper.queryDriveFolder(service, DRIVEROOT));
         }
         else {
-            files.addAll(QHelper.queryFile(service, folder.getId()));
-            folders.addAll(QHelper.queryFolder(service, folder.getId()));
+            files.addAll(QHelper.queryDriveFile(service, folder.getId()));
+            folders.addAll(QHelper.queryDriveFolder(service, folder.getId()));
         }
         for (File file:files) {
            downloadFile(file,savePath);
@@ -48,20 +46,20 @@ public class downloadHelper {
         }
     }
 
-    public void downloadAll(Drive newService, String owner) throws InterruptedException {
+    public String downloadAll(Drive newService, String owner) throws InterruptedException {
         String path=DATA_STORAGE_DIR.getAbsolutePath();
         System.out.println(path);
         service=newService;
         queryHelper QHelper= new queryHelper();
         QHelper.setOWNER(owner);
         httpDownloadHelper(path,null,QHelper);
+        return path;
     }
 
     private void downloadFile(File file, String savePath) {
         try {
             java.io.File targetFile= new java.io.File(savePath, file.getName());
             if ((!targetFile.exists())) {
-
                 OutputStream out = new FileOutputStream(targetFile);
                 String fileMimeType=file.getMimeType();
                 System.out.println("MimeType for file "+file.getName()+" is "+fileMimeType);
@@ -80,4 +78,8 @@ public class downloadHelper {
         }
     }
 
+    public void setDataStoreDirectory(String path) {
+        DATA_STORAGE_DIR= new java.io.File(
+               path, ".downloadTemp/");
+    }
 }

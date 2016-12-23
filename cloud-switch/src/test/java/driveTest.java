@@ -2,7 +2,6 @@
 package test.java;
 import plugins.googleDrive.GoogleDrive;
 import org.junit.Test;
-import plugins.googleDrive.queryHelper;
 
 import static java.lang.System.exit;
 
@@ -19,6 +18,9 @@ public class driveTest {
             exit(-1);
         }
         System.out.println("auth success!");
+        drive.load();
         drive.downloadAll();
+        //To test the upload function, please specify the absolute path of the folder you want to upload
+        //drive.uploadAll("Path you want");
     }
 }

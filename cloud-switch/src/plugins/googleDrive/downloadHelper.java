@@ -29,12 +29,12 @@ public class downloadHelper {
         ArrayList<File> files= new ArrayList<File>();
         ArrayList<File> folders = new ArrayList<File>();
         if (savePath==DATA_STORAGE_DIR.getAbsolutePath()) {
-            files.addAll(QHelper.queryFile(service, DRIVEROOT));
-            folders.addAll(QHelper.queryFolder(service, DRIVEROOT));
+            files.addAll(QHelper.queryDriveFile(service, DRIVEROOT));
+            folders.addAll(QHelper.queryDriveFolder(service, DRIVEROOT));
         }
         else {
-            files.addAll(QHelper.queryFile(service, folder.getId()));
-            folders.addAll(QHelper.queryFolder(service, folder.getId()));
+            files.addAll(QHelper.queryDriveFile(service, folder.getId()));
+            folders.addAll(QHelper.queryDriveFolder(service, folder.getId()));
         }
         for (File file:files) {
            downloadFile(file,savePath);

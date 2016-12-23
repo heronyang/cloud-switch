@@ -27,7 +27,7 @@ public class queryHelper {
      * @return an queried file list
      * @throws IOException
      */
-    private static List<File> queryHelper(Drive service, String parentID, Boolean ifFile) {
+    private static List<File> queryDriveHelper(Drive service, String parentID, Boolean ifFile) {
         List<File> files;
         List<File> results = new ArrayList<File>();
         String pageToken = null;
@@ -73,12 +73,12 @@ public class queryHelper {
         return q;
     }
 
-    public static List<File> queryFile(Drive service,String parentID)
+    public static List<File> queryDriveFile(Drive service,String parentID)
     {
-        return queryHelper(service,parentID,true);
+        return queryDriveHelper(service,parentID,true);
     }
-    public static List<File> queryFolder(Drive service,String parentID)
+    public static List<File> queryDriveFolder(Drive service,String parentID)
     {
-        return queryHelper(service,parentID,false);
+        return queryDriveHelper(service,parentID,false);
     }
 }

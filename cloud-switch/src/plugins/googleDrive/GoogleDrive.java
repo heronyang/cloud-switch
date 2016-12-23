@@ -51,7 +51,7 @@ public class GoogleDrive implements StoragePlugin {
 	}
 
 	public void uploadAll(String path) {
-		// TODO Auto-generated method stub
+		UHelper.uploadALL(path,SERVICE);
 		
 	}
 

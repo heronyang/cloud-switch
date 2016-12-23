@@ -119,15 +119,6 @@ public class authHelper {
                 .build();
     }
 
-    public static void downloadFile(String fileID, Drive service, OutputStream outputStream){
-        try{
-            service.files().export(fileID, "application/pdf")
-                    .executeMediaAndDownloadTo(outputStream);
-        }
-        catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
-    }
     public static String setOwner(Drive service)
     {
         try {

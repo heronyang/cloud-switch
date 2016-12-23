@@ -5,15 +5,17 @@ package plugins.googleDrive;
  * Information Networking Institute, Carnegie Mellon University
  **/
 public class mimeType {
-    private static final String GOOGLE_DOC = "application/vnd.google-apps.document";
-    private static final String GOOGLE_UNKNOWN = "application/vnd.google-apps.unknown";
-    private static final String GOOGLE_SHEET = "application/vnd.google-apps.spreadsheet";
-    private static final String GOOGLE_DRAWING = "application/vnd.google-apps.drawing";
-    private static final String PLAIN_TEXT = "text/plain";
-    private static final String MS_EXCEL = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-    private static final String MS_DOC="application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-    private static final String JPEG = "image/jpeg";
-    private static final String PDF="application/pdf";
+    public static final String GOOGLE_DOC = "application/vnd.google-apps.document";
+    public static final String GOOGLE_UNKNOWN = "application/vnd.google-apps.unknown";
+    public static final String GOOGLE_SHEET = "application/vnd.google-apps.spreadsheet";
+    public static final String GOOGLE_DRAWING = "application/vnd.google-apps.drawing";
+    public static final String PLAIN_TEXT = "text/plain";
+    public static final String MS_EXCEL = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    public static final String MS_DOC="application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    public static final String JPEG = "image/jpeg";
+    public static final String PDF="application/pdf";
+    public static final String GOOGLE_FOLDER="application/vnd.google-apps.folder";
+    public static final String OCT_STREAM="application/octet-stream";
 
     public static boolean ifGoogleDoc(String mimeType) {
         System.out.println("mime: "+mimeType);
@@ -33,6 +35,8 @@ public class mimeType {
         if (mimeType.equals(GOOGLE_DRAWING)) return JPEG;
         return PDF;
     }
+
+
 
     private static boolean ifMSDoc(String fileName) {
         if (fileName.contains(".doc")) return true;

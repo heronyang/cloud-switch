@@ -1,7 +1,5 @@
 package plugins.dropbox;
 
-// Include the Dropbox SDK.
-import com.dropbox.core.*;
 import java.io.*;
 import java.util.Locale;
 import java.awt.Desktop;
@@ -9,21 +7,18 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import com.dropbox.core.*;
 import main.StoragePlugin;
 
 public class Dropbox implements StoragePlugin {
 
-    final String APP_KEY = "9pspc1npg8fzdun";
-    final String APP_SECRET = "v86a5mua157sizq";
-
     DbxAppInfo appInfo;
     DbxRequestConfig config;
-
-    private String accessToken;
+    DbxClient client;
 
 	public void load() {
 
-		appInfo = new DbxAppInfo(APP_KEY, APP_SECRET);
+		appInfo = new DbxAppInfo(Config.APP_KEY, Config.APP_SECRET);
 		config = new DbxRequestConfig("JavaTutorial/1.0", Locale.getDefault().toString());
 
 	}
@@ -56,7 +51,8 @@ public class Dropbox implements StoragePlugin {
 
 			String code = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();
 			DbxAuthFinish authFinish = webAuth.finish(code);
-			accessToken = authFinish.accessToken;
+			String accessToken = authFinish.accessToken;
+            client = new DbxClient(config, accessToken);
 
             printAccountName();
 
@@ -74,7 +70,6 @@ public class Dropbox implements StoragePlugin {
 
     private void printAccountName() {
 
-        DbxClient client = new DbxClient(config, accessToken);
         try {
             System.out.println("Linked account: " + client.getAccountInfo().displayName);
 		} catch(DbxException dbxE) {
@@ -85,36 +80,69 @@ public class Dropbox implements StoragePlugin {
 
 	public String downloadAll() {
 
-		DbxClient client = new DbxClient(config, accessToken);
+        return downloadFolder("/");
+
+	}
+
+    private String downloadFolder(String path) {
+
+        System.out.println("> Checking folder " + path);
+        createFolderIfNotExist(Config.TEMP_PATH + path);
+
         try {
-            DbxEntry.WithChildren listing = client.getMetadataWithChildren("/");
-            System.out.println("Files in the root path:");
-            for (DbxEntry child : listing.children) {
-                System.out.println("    " + child.name + ": " + child.toString());
+            DbxEntry.WithChildren listing = client.getMetadataWithChildren(path);
+            for (DbxEntry child: listing.children) {
+                System.out.println("> Found: " + child.name + " - " + child);
+                if(child.isFile()) {
+                    downloadFile(child.path);
+                }
+                if(child.isFolder()) {
+                    downloadFolder(child.path);
+                }
             }
         } catch(DbxException dbxE) {
 			dbxE.printStackTrace();
+            return null;
 		}
 
+        return "";
 
-        /*
-		FileOutputStream outputStream = new FileOutputStream("magnum-opus.txt");
-		try {
-			DbxEntry.File downloadedFile = client.getFile("/magnum-opus.txt", null,
-					outputStream);
-			System.out.println("Metadata: " + downloadedFile.toString());
-		} finally {
-			outputStream.close();
-		}
-        */
-		return null;
-	}
+    }
 
-	public void uploadAll(String path) {
-		// TODO Auto-generated method stub
+    private void createFolderIfNotExist(String path) {
+        File directory = new File(String.valueOf(path));
+        if( !directory.exists() ){
+            directory.mkdir();
+        }
+    }
+
+    private String downloadFile(String path) {
+
+        System.out.println("> Downloading file " + path);
+
+        String filepath = Config.TEMP_PATH + path;
+        FileOutputStream  outputStream;
 
         try {
-            DbxClient client = new DbxClient(config, accessToken);
+            outputStream = new FileOutputStream(filepath);
+			DbxEntry.File downloadedFile = client.getFile(path, null, outputStream);
+			System.out.println("> downloaded file " + downloadedFile.toString());
+			outputStream.close();
+		} catch(IOException e){
+			e.printStackTrace();
+            return null;
+		} catch(Exception e) {
+            System.err.println("Error in downloading " + path);
+            return null;
+        }
+
+        return filepath;
+
+    }
+
+	public void uploadAll(String path) {
+
+        try {
             System.out.println("Linked account: " + client.getAccountInfo().displayName);
         } catch(DbxException dbxE) {
 			dbxE.printStackTrace();

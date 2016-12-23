@@ -5,16 +5,20 @@ import plugins.googleDrive.GoogleDrive;
 
 public class Main {
 	
-	private static void transfer(StoragePlugin from, StoragePlugin to) {
+	private static boolean transfer(StoragePlugin from, StoragePlugin to) {
 		
 		try {
 			String savedPath = from.downloadAll();
+            if(savedPath == null) {
+                return false;
+            }
 			to.uploadAll(savedPath);
 		}
 		catch (Throwable t) {
 			t.printStackTrace();
 		}
 
+        return true;
 		
 	}
 	
@@ -38,7 +42,9 @@ public class Main {
 		}
 		
 		// transfer
-		transfer(dropbox, googleDrive);
+		if(transfer(dropbox, googleDrive) == false) {
+            System.err.println("Download failed");
+        }
 		
 		// deinit
 		googleDrive.unload();

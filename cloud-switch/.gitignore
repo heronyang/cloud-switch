@@ -64,3 +64,9 @@ local.properties
 
 # Code Recommenders
 .recommenders/
+
+# App
+.downloadTemp/
+downloadTemp/
+download_temp/
+.DS_Store

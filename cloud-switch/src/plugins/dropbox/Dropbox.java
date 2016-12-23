@@ -105,7 +105,7 @@ public class Dropbox implements StoragePlugin {
             return null;
 		}
 
-        return "";
+        return Config.TEMP_PATH + path;
 
     }
 
@@ -141,25 +141,44 @@ public class Dropbox implements StoragePlugin {
     }
 
 	public void uploadAll(String path) {
-
-        try {
-            System.out.println("Linked account: " + client.getAccountInfo().displayName);
-        } catch(DbxException dbxE) {
-			dbxE.printStackTrace();
-		}
-
-        /*
-		File inputFile = new File("working-draft.txt");
-		FileInputStream inputStream = new FileInputStream(inputFile);
-		try {
-			DbxEntry.File uploadedFile = client.uploadFile("/magnum-opus.txt",
-					DbxWriteMode.add(), inputFile.length(), inputStream);
-			System.out.println("Uploaded: " + uploadedFile.toString());
-		} finally {
-			inputStream.close();
-		}
-        */
+        uploadFolder(path, path);
 	}
+
+    private void uploadFolder(String path, String base) {
+
+        System.out.println("> Checking folder " + path);
+
+		File folder = new File(path);
+		for(final File file: folder.listFiles()) {
+			if (file.isDirectory()) {
+				uploadFolder(file.getAbsolutePath(), base);
+			} else {
+                uploadFile(file.getAbsolutePath(), base);
+			}
+		}
+
+    }
+
+    private boolean uploadFile(String path, String base) {
+
+		File inputFile = new File(path);
+        String target = "/" + new File(base).toURI().relativize(new File(path).toURI()).getPath();
+        System.out.println("> Found file " + path + ", will upload as " + target);
+
+		try {
+		    FileInputStream inputStream = new FileInputStream(inputFile);
+			DbxEntry.File uploadedFile = client.uploadFile(target,
+					DbxWriteMode.add(), inputFile.length(), inputStream);
+			System.out.println("> Uploaded: " + uploadedFile.toString());
+			inputStream.close();
+            return true;
+		} catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error while uploading " + path);
+            return false;
+        }
+
+    }
 
 	private void openWebpage(URI uri) {
 		Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
@@ -179,5 +198,22 @@ public class Dropbox implements StoragePlugin {
 			e.printStackTrace();
 		}
 	}
+    
+    @Override
+    public String toString() {
+
+        try {
+            if(client != null) {
+                String name = client.getAccountInfo().displayName;
+                return "Dropbox (account name: " + name + ")";
+            }
+        } catch(DbxException dbxE) {
+			dbxE.printStackTrace();
+            return "Dropbox";
+		}
+
+        return "Dropbox";
+
+    }
 
 }

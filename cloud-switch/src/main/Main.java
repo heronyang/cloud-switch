@@ -9,6 +9,7 @@ public class Main {
 		
 		try {
 			String savedPath = from.downloadAll();
+            System.out.println(from + " saved all files to " + savedPath);
             if(savedPath == null) {
                 return false;
             }
@@ -42,7 +43,7 @@ public class Main {
 		}
 		
 		// transfer
-		if(transfer(dropbox, googleDrive) == false) {
+		if(transfer(googleDrive, dropbox) == false) {
             System.err.println("Download failed");
         }
 		

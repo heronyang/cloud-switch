@@ -38,7 +38,7 @@ public class Main {
 		}
 		
 		// transfer
-		transfer(googleDrive, dropbox);
+		transfer(dropbox, googleDrive);
 		
 		// deinit
 		googleDrive.unload();

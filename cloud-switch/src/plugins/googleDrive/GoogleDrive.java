@@ -42,6 +42,7 @@ public class GoogleDrive implements StoragePlugin {
 	public String downloadAll() throws InterruptedException {
 		downloadHelper DHelper=new downloadHelper();
 		DHelper.downloadAll(SERVICE,OWNER);
+        // FIXME: return the filepath of the root folder containing downloaded files
 		return null;
 	}
 

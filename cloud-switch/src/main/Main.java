@@ -23,6 +23,7 @@ public class Main {
 		
 	}
 	
+    /*
 	public static void main(String[] args) {
 		
 		// NOTE: since we only have two plugins for testing purpose
@@ -52,5 +53,6 @@ public class Main {
 		dropbox.unload();
 
 	}
+    */
 
 }

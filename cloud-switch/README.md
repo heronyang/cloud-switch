@@ -5,7 +5,7 @@
 ## Build
 
 ```
-$ mvn package -X
+$ mvn install -DskipTests
 ```
 
 ## Test
@@ -16,6 +16,12 @@ $ mvn test
 
 ## Run
 
+Main:
 ```
 $ mvn exec:java -Dexec.mainClass="main.Main"
+```
+
+Web Server:
+```
+$ mvn spring-boot:run
 ```

@@ -2,6 +2,7 @@ package plugins.googleDrive;
 
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -80,6 +81,17 @@ public class downloadHelper {
 
     public void setDataStoreDirectory(String path) {
         DATA_STORAGE_DIR= new java.io.File(
-               path, ".downloadTemp/");
+               path, ".downloadTemp"+System.currentTimeMillis());
+    }
+
+    public void downloadDestroy() {
+        try {
+            if (DATA_STORAGE_DIR.exists()  && DATA_STORAGE_DIR.isDirectory())
+                FileUtils.deleteDirectory(DATA_STORAGE_DIR);
+            System.out.println("Download State Destroyed!");
+        }
+        catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
     }
 }

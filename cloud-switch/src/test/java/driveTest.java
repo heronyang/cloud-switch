@@ -18,8 +18,9 @@ public class driveTest {
             exit(-1);
         }
         System.out.println("auth success!");
-        drive.load();
         drive.downloadAll();
+        drive.load();
+        drive.unload();
         //To test the upload function, please specify the absolute path of the folder you want to upload
         //drive.uploadAll("Path you want");
     }

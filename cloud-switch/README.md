@@ -25,3 +25,10 @@ Web Server:
 ```
 $ mvn spring-boot:run
 ```
+
+## Usage
+
+Web server location:
+```
+http://localhost:8080/
+```

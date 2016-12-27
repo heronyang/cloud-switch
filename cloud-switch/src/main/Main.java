@@ -1,7 +1,12 @@
 package main;
 
+import main.WebServlet;
+
 import plugins.dropbox.Dropbox;
 import plugins.googleDrive.GoogleDrive;
+
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 
 public class Main {
 	
@@ -22,14 +27,23 @@ public class Main {
         return true;
 		
 	}
-	
-    /*
-	public static void main(String[] args) {
-		
-		// NOTE: since we only have two plugins for testing purpose
-		// at this point, don't bother to optimize the code here too much
-		// it will be a good idea to have a pluginManager class in the future
-		
+
+    public static void runServer() {
+
+		Server server = new Server(8080);
+		ServletContextHandler handler = new ServletContextHandler(server, "/");
+		handler.addServlet(WebServlet.class, "/");
+
+        try {
+            server.start();
+        } catch(Exception e) {
+            System.err.println("Error in starting the web server");
+        }
+
+    }
+
+    public static void runApplication() {
+
 		// init
 		StoragePlugin googleDrive = new GoogleDrive();
 		StoragePlugin dropbox = new Dropbox();
@@ -52,7 +66,12 @@ public class Main {
 		googleDrive.unload();
 		dropbox.unload();
 
+    }
+	
+	public static void main(String[] args) {
+
+        runServer();
+
 	}
-    */
 
 }

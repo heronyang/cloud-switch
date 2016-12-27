@@ -7,6 +7,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import java.sql.Timestamp;
+
 import com.dropbox.core.*;
 import main.StoragePlugin;
 
@@ -15,6 +17,8 @@ public class Dropbox implements StoragePlugin {
     DbxAppInfo appInfo;
     DbxRequestConfig config;
     DbxClient client;
+
+    String downloadFolderPath = "";
 
 	public void load() {
 
@@ -80,6 +84,10 @@ public class Dropbox implements StoragePlugin {
 
 	public String downloadAll() {
 
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        this.downloadFolderPath = Config.TEMP_PATH + timestamp.getTime();
+        System.out.println("Donwload folder path: " + this.downloadFolderPath);
+
         return downloadFolder("/");
 
 	}
@@ -87,7 +95,7 @@ public class Dropbox implements StoragePlugin {
     private String downloadFolder(String path) {
 
         System.out.println("> Checking folder " + path);
-        createFolderIfNotExist(Config.TEMP_PATH + path);
+        createFolderIfNotExist(this.downloadFolderPath + path);
 
         try {
             DbxEntry.WithChildren listing = client.getMetadataWithChildren(path);
@@ -105,22 +113,25 @@ public class Dropbox implements StoragePlugin {
             return null;
 		}
 
-        return Config.TEMP_PATH + path;
+        return this.downloadFolderPath + path;
 
     }
 
     private void createFolderIfNotExist(String path) {
+
         File directory = new File(String.valueOf(path));
+
         if( !directory.exists() ){
             directory.mkdir();
         }
+
     }
 
     private String downloadFile(String path) {
 
         System.out.println("> Downloading file " + path);
 
-        String filepath = Config.TEMP_PATH + path;
+        String filepath = this.downloadFolderPath + path;
         FileOutputStream  outputStream;
 
         try {

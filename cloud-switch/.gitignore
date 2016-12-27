@@ -66,6 +66,6 @@ local.properties
 .recommenders/
 
 # App
-.downloadTemp/
-.dropbox_download_temp/
+.downloadTemp*/
+.dropbox_download_temp*/
 .DS_Store

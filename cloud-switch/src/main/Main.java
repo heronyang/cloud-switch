@@ -27,7 +27,7 @@ public class Main {
 		}
 		
 		// transfer
-		if(transfer(googleDrive, dropbox) == false) {
+		if(transfer(dropbox, googleDrive) == false) {
             System.err.println("Download failed");
         }
 		

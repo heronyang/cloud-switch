@@ -16,15 +16,10 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 
 import com.google.api.services.drive.DriveScopes;
-import com.google.api.services.drive.model.*;
 import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.model.File;
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
-import org.mortbay.jetty.AbstractGenerator;
+import org.apache.commons.io.FileUtils;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

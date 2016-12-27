@@ -4,7 +4,7 @@ import com.google.api.client.http.FileContent;
 import com.google.api.services.drive.Drive;
 
 import com.google.api.services.drive.model.File;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
 import java.util.Collections;

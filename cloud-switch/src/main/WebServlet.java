@@ -56,8 +56,7 @@ public class WebServlet extends HttpServlet {
                 return false;
             }
 			to.uploadAll(savedPath);
-		}
-		catch (Throwable t) {
+		} catch (Throwable t) {
 			t.printStackTrace();
 		}
 
@@ -75,10 +74,12 @@ public class WebServlet extends HttpServlet {
 
             // TODO
             response.getWriter().println("request sent");
+
         } else if(this.operation.equals("googledrive2dropbox")) {
 
             // TODO
             response.getWriter().println("request sent");
+
         } else {
             response.getWriter().println("<a href=\"dropbox2googledrive/\">Dropbox -> Google Drive</a><br />");
             response.getWriter().println("<a href=\"googledrive2dropbox/\">Google Drive -> Dropbox</a><br />");

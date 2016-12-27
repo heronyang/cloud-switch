@@ -10,6 +10,29 @@ public class Main {
 
 	public static void main(String[] args) {
 
+		// init
+		StoragePlugin googleDrive = new GoogleDrive();
+		StoragePlugin dropbox = new Dropbox();
+		
+		googleDrive.load();
+		dropbox.load();
+		
+		// auth
+		if(!googleDrive.auth() || !dropbox.auth()) {
+			System.err.println("Authedication error");
+			return;
+		}
+		
+		// transfer
+		if(transfer(googleDrive, dropbox) == false) {
+            System.err.println("Download failed");
+        }
+		
+		// deinit
+		googleDrive.unload();
+		dropbox.unload();
+
+/*
         Server server = new Server(8080);
  
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -26,6 +49,7 @@ public class Main {
 		} catch(Exception e) {
 			System.err.println("Error in starting the web server");
         }
+*/
 
 	}
 

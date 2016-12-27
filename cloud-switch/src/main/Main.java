@@ -6,6 +6,9 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import plugins.dropbox.Dropbox;
+import plugins.googleDrive.GoogleDrive;
+
 public class Main {
 
 	public static void main(String[] args) {
@@ -51,6 +54,23 @@ public class Main {
         }
 */
 
+	}
+
+	private static boolean transfer(StoragePlugin from, StoragePlugin to) {
+		
+		try {
+			String savedPath = from.downloadAll();
+            System.out.println(from + " saved all files to " + savedPath);
+            if(savedPath == null) {
+                return false;
+            }
+			to.uploadAll(savedPath);
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+
+        return true;
+		
 	}
 
 }

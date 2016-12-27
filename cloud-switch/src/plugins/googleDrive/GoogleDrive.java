@@ -26,8 +26,8 @@ public class GoogleDrive implements StoragePlugin {
 	}
 
 	public void unload() {
-		AHelper.authDestroy();
-		UHelper.uploadDestroy();
+		//AHelper.authDestroy();
+		//UHelper.uploadDestroy();
 		//DHelper.downloadDestroy();
 	}
 

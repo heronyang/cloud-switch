@@ -4,7 +4,9 @@ package plugins.googleDrive;
  * Created by inteltao on 2016/12/19.
  * Information Networking Institute, Carnegie Mellon University
  **/
+import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
 import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.auth.oauth2.TokenResponse;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
@@ -58,9 +60,7 @@ public class authHelper {
 
     /**
      * Global instance of the scopes required by this quickstart.
-     * <p>
      * If modifying these scopes, delete your previously saved credentials
-     * at ~/.credentials/drive-java-quickstart
      */
     private final List<String> SCOPES =
             Arrays.asList(DriveScopes.DRIVE);
@@ -86,6 +86,16 @@ public class authHelper {
                         .setDataStoreFactory(DATA_STORE_FACTORY)
                         .setAccessType("offline")
                         .build();
+        /*LocalServerReceiver receiver = new LocalServerReceiver();
+        String redirectURL = receiver.getRedirectUri();
+        AuthorizationCodeRequestUrl authorizedURL = flow.newAuthorizationUrl();
+        authorizedURL.setRedirectUri(redirectURL);
+        String url=authorizedURL.build();
+        System.out.println("url: "+url);
+        String code = receiver.waitForCode();
+        TokenResponse response = flow.newTokenRequest(code).setRedirectUri(redirectURL).execute();
+        Credential credential = flow.createAndStoreCredential(response,"user");*/
+        //System.out.println(url);
         Credential credential = new AuthorizationCodeInstalledApp(
                 flow, new LocalServerReceiver()).authorize("user");
         System.out.println(

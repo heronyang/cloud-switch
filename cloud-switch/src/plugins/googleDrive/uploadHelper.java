@@ -4,6 +4,8 @@ import com.google.api.client.http.FileContent;
 import com.google.api.services.drive.Drive;
 
 import com.google.api.services.drive.model.File;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+
 import java.io.IOException;
 import java.util.Collections;
 /**
@@ -12,6 +14,7 @@ import java.util.Collections;
  **/
 public class uploadHelper {
     private Drive service;
+    private java.io.File uploadPath;
     private void uploadHelper(java.io.File currentDirectory, String drivePath) {
         java.io.File[] files = currentDirectory.listFiles();
        if (files==null) return;
@@ -26,6 +29,7 @@ public class uploadHelper {
     }
     public void uploadALL(String savePath, Drive service) {
         java.io.File rootDirectory = new java.io.File(savePath);
+        uploadPath = rootDirectory;
         this.service=service;
         try {
             String drivePath = service.files().get("root").execute().getId();
@@ -58,7 +62,7 @@ public class uploadHelper {
         fileMetadata.setParents(Collections.singletonList(folderPath));
         try {
             File file = service.files().create(fileMetadata)
-                    .setFields("id")
+                    .setFields("id, parents")
                     .execute();
             System.out.println("Folder ID: " + file.getId());
             return file.getId();
@@ -67,5 +71,15 @@ public class uploadHelper {
             System.err.println(e.getMessage());
         }
         return null;
+    }
+
+    public void uploadDestroy() {
+        try {
+            if (uploadPath.exists() && uploadPath.isDirectory())
+                FileUtils.deleteDirectory(uploadPath);
+        }
+        catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
     }
 }

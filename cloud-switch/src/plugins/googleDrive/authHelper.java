@@ -20,6 +20,7 @@ import com.google.api.services.drive.model.*;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.mortbay.jetty.AbstractGenerator;
 
 import java.io.*;
@@ -37,29 +38,28 @@ public class authHelper {
     /**
      * Email Address of the user who accesses this appplication
      */
-    private static String OWNER;
+    private String OWNER;
 
     /**
      * Directory to store user credentials for this application.
      */
-    private static final java.io.File DATA_CREDENTIALS_DIR = new java.io.File(
-            System.getProperty("user.home"), ".credentials/drive-java-quickstart");
+    private java.io.File DATA_CREDENTIALS_DIR;
 
     /**
      * Global instance of the {@link FileDataStoreFactory}.
      */
-    private static FileDataStoreFactory DATA_STORE_FACTORY;
+    private FileDataStoreFactory DATA_STORE_FACTORY;
 
     /**
      * Global instance of the JSON factory.
      */
-    private static final JsonFactory JSON_FACTORY =
+    private final JsonFactory JSON_FACTORY =
             JacksonFactory.getDefaultInstance();
 
     /**
      * Global instance of the HTTP transport.
      */
-    private static HttpTransport HTTP_TRANSPORT;
+    private HttpTransport HTTP_TRANSPORT;
 
     /**
      * Global instance of the scopes required by this quickstart.
@@ -67,18 +67,9 @@ public class authHelper {
      * If modifying these scopes, delete your previously saved credentials
      * at ~/.credentials/drive-java-quickstart
      */
-    private static final List<String> SCOPES =
+    private final List<String> SCOPES =
             Arrays.asList(DriveScopes.DRIVE);
 
-    static {
-        try {
-            HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-            DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_CREDENTIALS_DIR);
-        } catch (Throwable t) {
-            t.printStackTrace();
-            System.exit(1);
-        }
-    }
 
     /**
      * Creates an authorized Credential object.
@@ -86,7 +77,7 @@ public class authHelper {
      * @return an authorized Credential object.
      * @throws IOException
      */
-    public static Credential authorize() throws IOException {
+    public  Credential authorize() throws IOException {
         // Load client secrets.
         InputStream in =
                 authHelper.class.getResourceAsStream("/client_secret.json");
@@ -111,7 +102,17 @@ public class authHelper {
      * @return an authorized Drive client service
      * @throws IOException
      */
-    public static Drive getDriveService() throws IOException {
+    public Drive getDriveService() throws IOException {
+        DATA_CREDENTIALS_DIR = new java.io.File(
+                System.getProperty("user.home"), ".credentials/cloudSwitchAuth"+
+                System.currentTimeMillis());
+        try {
+            HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+            DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_CREDENTIALS_DIR);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            System.exit(1);
+        }
         Credential credential = authorize();
         return new Drive.Builder(
                 HTTP_TRANSPORT, JSON_FACTORY, credential)
@@ -119,7 +120,7 @@ public class authHelper {
                 .build();
     }
 
-    public static String setOwner(Drive service)
+    public String setOwner(Drive service)
     {
         try {
             String httpReturnValue = service.about().get().setFields(ABOUTEMAIL).execute().toString();
@@ -131,5 +132,15 @@ public class authHelper {
             t.printStackTrace();
         }
         return null;
+    }
+
+    public void authDestroy() {
+        try {
+            FileUtils.deleteDirectory(DATA_CREDENTIALS_DIR);
+            System.out.println("Authentication State Destroyed!");
+        }
+        catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
     }
 }

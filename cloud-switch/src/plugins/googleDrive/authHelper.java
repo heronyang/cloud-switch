@@ -98,8 +98,8 @@ public class authHelper {
         //System.out.println(url);
         Credential credential = new AuthorizationCodeInstalledApp(
                 flow, new LocalServerReceiver()).authorize("user");
-        System.out.println(
-                "Credentials saved to " + DATA_CREDENTIALS_DIR.getAbsolutePath());
+        //System.out.println(
+        //        "Credentials saved to " + DATA_CREDENTIALS_DIR.getAbsolutePath());
         return credential;
     }
     /**

@@ -14,21 +14,21 @@ $ mvn install -DskipTests
 $ mvn test
 ```
 
-## Run
+## Run Local
 
 Main:
 ```
 $ mvn exec:java -Dexec.mainClass="main.Main"
 ```
 
-Web Server:
+## Run Remote
+
+Server:
 ```
-$ mvn spring-boot:run
+$ ./server.hs
 ```
 
-## Usage
-
-Web server location:
+Client:
 ```
-http://localhost:8080/
+$ nc <SERVER_IP> 18756
 ```

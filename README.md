@@ -1,4 +1,4 @@
-# cloud-switch
+# Cloud Switch
 
 Transfer your files between different cloud storage services.
 

@@ -30,5 +30,5 @@ $ ./server.hs
 
 Client:
 ```
-$ nc <SERVER_IP> 18756
+$ telnet <SERVER_IP> 18756
 ```

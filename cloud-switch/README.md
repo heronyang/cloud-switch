@@ -25,7 +25,7 @@ $ mvn exec:java -Dexec.mainClass="main.Main"
 
 Server:
 ```
-$ ./server.hs
+$ ./server.sh
 ```
 
 Client:
